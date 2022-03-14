@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
 
 const PORT = process.env.SERVER_PORT || 3000;
 
@@ -42,7 +43,11 @@ app.post('/login', (req, res) => {
   // surasti vartotoja vardu username
   const userObjFound = users.find((userObj) => userObj.username === username);
   // jei randam ziurim ar sutampa slaptazodziai
-  if (userObjFound && userObjFound.password === password) {
+  // verify password
+  // if (bcrypt.compareSync(password, userObjFound.password)) {
+  //   console.log('sutampa');
+  // }
+  if (userObjFound && bcrypt.compareSync(password, userObjFound.password)) {
     res.json('login success');
   } else {
     res.status(400).send('username or password not match');
@@ -52,9 +57,10 @@ app.post('/login', (req, res) => {
 app.post('/register', (req, res) => {
   // gauti username ir password su kuriais bandoma prisiregistruoti
   const { username, password } = req.body;
+  const passHash = bcrypt.hashSync(password, 10);
   const newUser = {
     username,
-    password,
+    password: passHash,
   };
   users.push(newUser);
   res.send('register success');
