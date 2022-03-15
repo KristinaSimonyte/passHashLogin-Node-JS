@@ -25,3 +25,15 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://localhost:3000/validate
+Content-Type: application/json
+
+{
+"email":"james@james.com",
+"town":"Kaunas",
+"age":25,
+"gender":"male"
+}
+
+###
